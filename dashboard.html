@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Jurisia — Dashboard</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<div class="app-shell">
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">⚖</span>
+        Jurisi<span class="logo-accent">a</span>
+      </a>
+    </div>
+
+    <nav class="sidebar-nav">
+      <span class="nav-group-label">Tableau de bord</span>
+      <div class="nav-item active" data-view="recherche">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+        Recherche juridique
+      </div>
+      <div class="nav-item" data-view="analyse">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+        Analyse de contrat
+      </div>
+      <div class="nav-item" data-view="chat">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Chat juridique
+      </div>
+      <div class="nav-item" data-view="redaction">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+        Rédaction assistée
+      </div>
+
+      <span class="nav-group-label">Espace cabinet</span>
+      <div class="nav-item" data-view="dossiers">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg>
+        Dossiers
+        <span class="nav-badge">12</span>
+      </div>
+      <div class="nav-item" data-view="equipe">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Équipe
+      </div>
+      <div class="nav-item" data-view="rapports">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        Rapports
+      </div>
+
+      <span class="nav-group-label">Compte</span>
+      <div class="nav-item" data-view="parametres">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg>
+        Paramètres API
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="user-card">
+        <div class="user-avatar">SM</div>
+        <div class="user-info">
+          <div class="user-name">Me. Sophie Martin</div>
+          <div class="user-role">Associée · Cabinet Dupont</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══ TOPBAR ══ -->
+  <header class="topbar">
+    <div class="topbar-breadcrumb">
+      <span class="breadcrumb-root">Jurisia</span>
+      <span class="breadcrumb-sep">›</span>
+      <span class="breadcrumb-current" id="breadcrumbCurrent">Recherche juridique</span>
+    </div>
+    <div class="topbar-search">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <input type="text" placeholder="Recherche rapide…" id="topbarSearch" />
+    </div>
+    <div class="topbar-actions">
+      <div class="api-status" id="apiStatusBtn" title="Configurer l'API">
+        <div class="api-status-dot" id="apiStatusDot"></div>
+        <span id="apiStatusText">API non configurée</span>
+      </div>
+      <button class="btn-icon" title="Notifications" style="position:relative;" id="notifBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="notif-dot"></span>
+      </button>
+      <a href="index.html" class="btn btn-ghost btn-sm">← Accueil</a>
+    </div>
+  </header>
+
+  <!-- ══ MAIN CONTENT ══ -->
+  <main class="main-content" id="mainContent">
+
+    <!-- ────── VIEW: RECHERCHE ────── -->
+    <section class="view active" id="view-recherche">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Recherche jurisprudentielle</h1>
+          <p class="view-subtitle">Interrogez la jurisprudence française et européenne en langage naturel</p>
+        </div>
+      </div>
+
+      <div class="search-bar-wrap">
+        <div class="search-bar-inner">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+          <textarea
+            id="searchQuery"
+            class="search-textarea"
+            placeholder="Ex : Quelles sont les conditions de la résolution judiciaire d'un contrat pour inexécution ? Citez la jurisprudence récente de la Cour de cassation."
+            rows="2"
+          ></textarea>
+        </div>
+        <div class="search-bar-footer">
+          <div class="source-chips">
+            <label class="chip active"><input type="checkbox" value="cassation" checked class="src-filter" hidden /> Cour de cassation</label>
+            <label class="chip active"><input type="checkbox" value="conseil_etat" checked class="src-filter" hidden /> Conseil d'État</label>
+            <label class="chip active"><input type="checkbox" value="cjue" checked class="src-filter" hidden /> CJUE</label>
+            <label class="chip"><input type="checkbox" value="legifrance" class="src-filter" hidden /> Légifrance</label>
+          </div>
+          <div style="display:flex;align-items:center;gap:var(--space-3);">
+            <span class="search-hint">⌘ + Entrée pour lancer</span>
+            <button class="btn btn-primary btn-sm" id="searchBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+              Rechercher
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Loading -->
+      <div id="searchLoading" class="hidden" style="display:flex;align-items:center;gap:var(--space-4);padding:var(--space-8) 0;color:var(--text-2);font-size:14px;">
+        <div class="spinner"></div>
+        <span>Analyse de la jurisprudence en cours…</span>
+      </div>
+
+      <!-- Results -->
+      <div id="searchResults" class="results-section hidden">
+        <div class="results-header">
+          <span class="results-count" id="resultsCount"></span>
+          <button class="btn btn-ghost btn-sm" id="copySearchBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+            Copier
+          </button>
+        </div>
+
+        <!-- AI synthesis stream -->
+        <div class="card" style="margin-bottom:var(--space-5);">
+          <div style="display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4);padding-bottom:var(--space-4);border-bottom:1px solid var(--border);">
+            <div style="width:32px;height:32px;background:var(--gold-pale);border:1px solid var(--border-gold);border-radius:var(--r-sm);display:flex;align-items:center;justify-content:center;color:var(--gold);font-size:14px;font-weight:700;flex-shrink:0;">⚖</div>
+            <span style="font-size:12px;font-weight:600;color:var(--gold);letter-spacing:0.5px;text-transform:uppercase;">Synthèse IA — Claude Opus 4.6</span>
+          </div>
+          <div id="searchSynthesis" class="md-content" style="font-size:14px;line-height:1.8;"></div>
+        </div>
+
+        <!-- Individual result cards -->
+        <div id="resultCards"></div>
+      </div>
+
+      <!-- Example queries -->
+      <div id="searchPlaceholder" style="margin-top:var(--space-8);">
+        <p class="section-label" style="margin-bottom:var(--space-4);">Requêtes suggérées</p>
+        <div style="display:flex;flex-wrap:wrap;gap:var(--space-3);">
+          <button class="chip" data-query="Conditions de résiliation anticipée d'un contrat à durée déterminée">Résiliation anticipée CDT</button>
+          <button class="chip" data-query="Responsabilité délictuelle du commettant du fait de ses préposés selon la jurisprudence récente">Responsabilité du commettant</button>
+          <button class="chip" data-query="Validité et limites des clauses de non-concurrence en droit du travail français">Clause de non-concurrence</button>
+          <button class="chip" data-query="Prescription de l'action en responsabilité civile extracontractuelle : délais et point de départ">Prescription délictuelle</button>
+          <button class="chip" data-query="Conditions d'application du principe de précaution en droit administratif">Principe de précaution</button>
+          <button class="chip" data-query="Nullité d'une clause abusive dans un contrat de consommation selon la CJUE">Clause abusive CJUE</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────── VIEW: ANALYSE ────── -->
+    <section class="view" id="view-analyse">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Analyse de contrat</h1>
+          <p class="view-subtitle">Score de risque IA, détection des clauses critiques, recommandations de négociation</p>
+        </div>
+      </div>
+
+      <div class="two-col" style="align-items:start;">
+        <!-- Left: Upload + Config -->
+        <div style="display:flex;flex-direction:column;gap:var(--space-5);">
+          <div class="upload-zone" id="uploadZone">
+            <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt,.eml" />
+            <div class="upload-icon">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+            </div>
+            <h3>Déposez votre document</h3>
+            <p>PDF, Word, e-mail — jusqu'à 1 000 pages<br/><span class="link">ou parcourir vos fichiers</span></p>
+          </div>
+
+          <!-- File info (shown after upload) -->
+          <div id="fileInfo" class="card hidden" style="display:flex;align-items:center;gap:var(--space-4);">
+            <div style="width:40px;height:40px;background:var(--gold-pale);border:1px solid var(--border-gold);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;color:var(--gold);flex-shrink:0;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div style="flex:1;overflow:hidden;">
+              <div id="fileName" style="font-size:14px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;"></div>
+              <div id="fileSize" style="font-size:12px;color:var(--text-3);"></div>
+            </div>
+            <button class="btn-icon" id="removeFile" title="Supprimer">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          <div class="config-panel">
+            <p class="config-title">Options d'analyse</p>
+            <div class="config-options">
+              <label class="config-opt"><input type="checkbox" id="optClauses" checked /> Clauses clés et risques individuels</label>
+              <label class="config-opt"><input type="checkbox" id="optScore" checked /> Score de risque global (0–100)</label>
+              <label class="config-opt"><input type="checkbox" id="optJuris" checked /> Références jurisprudentielles</label>
+              <label class="config-opt"><input type="checkbox" id="optReco" checked /> Recommandations de négociation</label>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:var(--space-2);margin-bottom:var(--space-5);">
+              <label class="field-label" style="font-size:11px;color:var(--text-3);text-transform:uppercase;letter-spacing:0.5px;">Langue de sortie</label>
+              <select class="editor-select" id="analysisLang">
+                <option value="fr">Français</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-full" id="analyzeBtn">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              Lancer l'analyse IA
+            </button>
+          </div>
+
+          <!-- Demo documents -->
+          <div class="card">
+            <p style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.8px;margin-bottom:var(--space-4);">Documents récents</p>
+            <div style="display:flex;flex-direction:column;gap:2px;">
+              <div class="result-card" style="margin:0;padding:var(--space-3) var(--space-4);" onclick="loadDemoDoc('Contrat_TechCorp_v3.pdf')">
+                <div style="display:flex;align-items:center;gap:var(--space-3);">
+                  <span style="color:var(--gold);font-size:14px;">📄</span>
+                  <div style="flex:1;overflow:hidden;">
+                    <div style="font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Contrat_TechCorp_v3.pdf</div>
+                    <div style="font-size:11px;color:var(--text-3);">Il y a 2 jours · 48 pages</div>
+                  </div>
+                  <span class="badge badge-high" style="font-size:10px;">Élevé</span>
+                </div>
+              </div>
+              <div class="result-card" style="margin:0;padding:var(--space-3) var(--space-4);" onclick="loadDemoDoc('Bail_Commercial_Paris.pdf')">
+                <div style="display:flex;align-items:center;gap:var(--space-3);">
+                  <span style="color:var(--gold);font-size:14px;">📄</span>
+                  <div style="flex:1;overflow:hidden;">
+                    <div style="font-size:13px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">Bail_Commercial_Paris.pdf</div>
+                    <div style="font-size:11px;color:var(--text-3);">Il y a 5 jours · 12 pages</div>
+                  </div>
+                  <span class="badge badge-medium" style="font-size:10px;">Moyen</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Results -->
+        <div id="analyseResultsWrap">
+          <!-- Placeholder -->
+          <div id="analysePlaceholder" class="card" style="text-align:center;padding:var(--space-16) var(--space-8);">
+            <div style="font-size:48px;margin-bottom:var(--space-4);opacity:0.3;">⚖</div>
+            <p style="color:var(--text-3);font-size:14px;">Déposez un document et lancez l'analyse pour obtenir le score de risque et les recommandations</p>
+          </div>
+
+          <!-- Loading -->
+          <div id="analyseLoading" class="card hidden" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:var(--space-16);gap:var(--space-5);">
+            <div class="spinner spinner-lg"></div>
+            <div style="text-align:center;">
+              <p style="font-weight:500;color:var(--text);margin-bottom:4px;" id="analyseLoadingStep">Lecture du document…</p>
+              <p style="font-size:13px;color:var(--text-3);">Analyse IA en cours, veuillez patienter</p>
+            </div>
+          </div>
+
+          <!-- Results -->
+          <div id="analyseResults" class="hidden">
+            <!-- Header: score + doc name -->
+            <div class="analysis-results">
+              <div class="analysis-results-header">
+                <div class="score-circle" id="scoreCircle">
+                  <div class="score-inner">
+                    <span class="score-value" id="scoreValue">—</span>
+                    <span class="score-label">Risque</span>
+                  </div>
+                </div>
+                <div style="flex:1;">
+                  <h3 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:4px;" id="analyseDocTitle">Analyse du document</h3>
+                  <p style="font-size:13px;color:var(--text-3);" id="analyseDocMeta"></p>
+                  <div style="display:flex;gap:var(--space-2);margin-top:var(--space-3);flex-wrap:wrap;" id="analyseBadges"></div>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:var(--space-2);">
+                  <button class="btn btn-outline btn-sm" id="exportPdfBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                    Rapport PDF
+                  </button>
+                  <button class="btn btn-ghost btn-sm" id="copyAnalyseBtn">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Copier
+                  </button>
+                </div>
+              </div>
+
+              <!-- Tabs -->
+              <div class="analysis-tabs">
+                <button class="analysis-tab active" data-tab="synthese">Synthèse</button>
+                <button class="analysis-tab" data-tab="clauses">Clauses</button>
+                <button class="analysis-tab" data-tab="juris">Jurisprudence</button>
+                <button class="analysis-tab" data-tab="reco">Recommandations</button>
+              </div>
+
+              <!-- Tab: Synthèse (streaming) -->
+              <div class="analysis-tab-content active" id="tab-synthese">
+                <div id="analyseStream" class="md-content" style="font-size:14px;line-height:1.85;min-height:120px;"></div>
+              </div>
+
+              <!-- Tab: Clauses -->
+              <div class="analysis-tab-content" id="tab-clauses">
+                <div id="clausesList">
+                  <!-- Injected by JS -->
+                </div>
+              </div>
+
+              <!-- Tab: Jurisprudence -->
+              <div class="analysis-tab-content" id="tab-juris">
+                <div id="jurisCards" style="display:flex;flex-direction:column;gap:var(--space-4);">
+                  <!-- Injected by JS -->
+                </div>
+              </div>
+
+              <!-- Tab: Recommandations -->
+              <div class="analysis-tab-content" id="tab-reco">
+                <div id="recoList" class="md-content" style="font-size:14px;line-height:1.85;">
+                  <!-- Injected by JS -->
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────── VIEW: CHAT ────── -->
+    <section class="view" id="view-chat">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Chat juridique</h1>
+          <p class="view-subtitle">Votre assistant IA en droit français et européen, disponible 24/7</p>
+        </div>
+        <button class="btn btn-outline btn-sm" id="newChatBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nouvelle conversation
+        </button>
+      </div>
+
+      <div class="chat-layout">
+        <!-- Conversation list -->
+        <div class="chat-sidebar">
+          <div class="chat-sidebar-header">
+            <p style="font-size:11px;font-weight:600;color:var(--text-3);text-transform:uppercase;letter-spacing:0.8px;">Conversations</p>
+          </div>
+          <div class="chat-list" id="chatList">
+            <div class="chat-list-item active">
+              <div class="chat-item-title">Clause de non-concurrence</div>
+              <div class="chat-item-date">Aujourd'hui</div>
+              <div class="chat-item-preview">Quelles sont les conditions de validité…</div>
+            </div>
+            <div class="chat-list-item">
+              <div class="chat-item-title">Résiliation bail commercial</div>
+              <div class="chat-item-date">Hier</div>
+              <div class="chat-item-preview">L'article L145-4 prévoit-il…</div>
+            </div>
+            <div class="chat-list-item">
+              <div class="chat-item-title">Prescription action en garantie</div>
+              <div class="chat-item-date">12 mars 2026</div>
+              <div class="chat-item-preview">Quel est le délai pour agir…</div>
+            </div>
+            <div class="chat-list-item">
+              <div class="chat-item-title">RGPD — transfert de données UE</div>
+              <div class="chat-item-date">10 mars 2026</div>
+              <div class="chat-item-preview">La Cour de Justice a jugé que…</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Chat main -->
+        <div class="chat-main">
+          <div class="chat-messages" id="chatMessages">
+            <!-- Welcome message -->
+            <div class="message ai">
+              <div class="message-avatar">⚖</div>
+              <div>
+                <div class="message-bubble md-content">
+                  <p>Bonjour, Maître Martin. Je suis <strong>Jurisia</strong>, votre assistant juridique IA spécialisé en droit français et européen.</p>
+                  <p>Je peux vous aider à :</p>
+                  <ul>
+                    <li>Rechercher et analyser la jurisprudence (Cass., CE, CJUE)</li>
+                    <li>Répondre à vos questions de droit civil, commercial, social ou administratif</li>
+                    <li>Analyser des clauses spécifiques d'un contrat</li>
+                    <li>Rédiger ou relire des actes juridiques</li>
+                  </ul>
+                  <p>Comment puis-je vous assister aujourd'hui ?</p>
+                </div>
+                <div class="message-time">Jurisia · maintenant</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Input area -->
+          <div class="chat-input-area">
+            <div id="chatContextPill" class="hidden">
+              <div class="chat-context-pill">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                <span id="chatContextName">Document.pdf</span>
+                <button onclick="removeChatContext()">✕</button>
+              </div>
+            </div>
+            <div class="chat-input-row">
+              <button class="btn-icon" id="attachFileBtn" title="Attacher un document">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+              </button>
+              <textarea
+                id="chatInput"
+                placeholder="Posez votre question juridique… (Cmd+Entrée pour envoyer)"
+                rows="1"
+              ></textarea>
+              <button class="btn btn-primary" id="chatSendBtn" style="padding:11px 16px;flex-shrink:0;">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </button>
+            </div>
+            <div style="margin-top:var(--space-2);font-size:11px;color:var(--text-4);text-align:center;">
+              Jurisia peut faire des erreurs. Vérifiez les informations juridiques importantes auprès des sources officielles.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────── VIEW: RÉDACTION ────── -->
+    <section class="view" id="view-redaction">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Rédaction assistée</h1>
+          <p class="view-subtitle">Générez et rédigez des actes juridiques avec l'aide de l'IA</p>
+        </div>
+        <div style="display:flex;gap:var(--space-3);">
+          <button class="btn btn-outline btn-sm" id="clearEditorBtn">Effacer</button>
+          <button class="btn btn-primary btn-sm" id="exportDocBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Exporter
+          </button>
+        </div>
+      </div>
+
+      <div class="editor-layout">
+        <!-- Config panel -->
+        <div class="editor-panel">
+          <div class="editor-panel-header">
+            <h4>Configuration</h4>
+          </div>
+          <div class="editor-config">
+            <div class="field-group">
+              <label class="field-label">Type d'acte</label>
+              <select class="editor-select" id="actType">
+                <option value="">— Sélectionner —</option>
+                <option value="assignation">Assignation en justice</option>
+                <option value="contrat_prestation">Contrat de prestation</option>
+                <option value="mise_en_demeure">Mise en demeure</option>
+                <option value="conclusions">Conclusions en défense</option>
+                <option value="ccession_parts">Cession de parts sociales</option>
+                <option value="nda">Accord de confidentialité (NDA)</option>
+                <option value="transaction">Protocole transactionnel</option>
+                <option value="bail_commercial">Bail commercial</option>
+              </select>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Parties</label>
+              <input class="input" type="text" id="actParties" placeholder="Ex: SARL Dupont / SAS Martin" />
+            </div>
+            <div class="field-group">
+              <label class="field-label">Contexte / Instructions</label>
+              <textarea class="input" id="actContext" placeholder="Décrivez les éléments essentiels de l'acte à rédiger…" rows="4"></textarea>
+            </div>
+            <div class="field-group">
+              <label class="field-label">Juridiction</label>
+              <select class="editor-select" id="actJuridiction">
+                <option value="fr">Droit français</option>
+                <option value="eu">Droit européen</option>
+                <option value="fr_eu">Droit français + européen</option>
+              </select>
+            </div>
+            <button class="btn btn-primary btn-full" id="generateBtn">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+              Générer l'acte
+            </button>
+          </div>
+        </div>
+
+        <!-- Editor -->
+        <div class="editor-main">
+          <div class="editor-toolbar">
+            <button class="btn-icon btn-sm" title="Gras"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 4h8a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/><path d="M6 12h9a4 4 0 0 1 4 4 4 4 0 0 1-4 4H6z"/></svg></button>
+            <button class="btn-icon btn-sm" title="Italique"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="19" y1="4" x2="10" y2="4"/><line x1="14" y1="20" x2="5" y2="20"/><line x1="15" y1="4" x2="9" y2="20"/></svg></button>
+            <button class="btn-icon btn-sm" title="Souligné"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 3v7a6 6 0 0 0 6 6 6 6 0 0 0 6-6V3"/><line x1="4" y1="21" x2="20" y2="21"/></svg></button>
+            <div class="toolbar-sep"></div>
+            <button class="btn-icon btn-sm" title="Liste"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></button>
+            <div class="toolbar-sep"></div>
+            <button class="btn-icon btn-sm" id="aiSuggestBtn" title="Suggestion IA" style="color:var(--gold);">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+            </button>
+            <span style="font-size:11px;color:var(--text-3);margin-left:4px;">Suggestion IA</span>
+          </div>
+          <div class="editor-area" style="position:relative;">
+            <textarea
+              id="editorContent"
+              class="editor-textarea"
+              placeholder="Votre document juridique apparaîtra ici après génération, ou commencez à rédiger directement…"
+            ></textarea>
+            <!-- AI suggestion overlay -->
+            <div class="ai-suggestion-overlay hidden" id="aiSuggestionBox">
+              <div class="suggestion-header">✦ Suggestion Jurisia</div>
+              <div class="suggestion-text" id="suggestionText">Chargement…</div>
+              <div class="suggestion-actions">
+                <button class="btn btn-primary btn-sm" id="acceptSuggestion">Insérer</button>
+                <button class="btn btn-ghost btn-sm" id="dismissSuggestion">Ignorer</button>
+              </div>
+            </div>
+          </div>
+          <div class="editor-footer">
+            <span id="wordCount">0 mots</span>
+            <span id="editorStatus" style="color:var(--text-3);">Prêt</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────── VIEW: DOSSIERS ────── -->
+    <section class="view" id="view-dossiers">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Dossiers</h1>
+          <p class="view-subtitle">Gestion centralisée de tous vos dossiers et contrats</p>
+        </div>
+        <button class="btn btn-primary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nouveau dossier
+        </button>
+      </div>
+
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4);margin-bottom:var(--space-8);">
+        <div class="card"><div style="font-size:28px;font-weight:700;font-family:'Playfair Display',serif;color:var(--gold);">47</div><div style="font-size:13px;color:var(--text-3);margin-top:4px;">Dossiers actifs</div></div>
+        <div class="card"><div style="font-size:28px;font-weight:700;font-family:'Playfair Display',serif;color:var(--risk-critical);">3</div><div style="font-size:13px;color:var(--text-3);margin-top:4px;">Alertes critiques</div></div>
+        <div class="card"><div style="font-size:28px;font-weight:700;font-family:'Playfair Display',serif;color:var(--text);">12</div><div style="font-size:13px;color:var(--text-3);margin-top:4px;">Analyses ce mois</div></div>
+        <div class="card"><div style="font-size:28px;font-weight:700;font-family:'Playfair Display',serif;color:var(--risk-low);">94%</div><div style="font-size:13px;color:var(--text-3);margin-top:4px;">Temps économisé</div></div>
+      </div>
+
+      <div class="card" style="overflow:auto;">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Dossier</th>
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Client</th>
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Statut</th>
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Risque</th>
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Mis à jour</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 16px;color:var(--text);font-weight:500;">Acquisition TechCorp / SaaS</td>
+              <td style="padding:14px 16px;color:var(--text-2);">TechCorp SAS</td>
+              <td style="padding:14px 16px;"><span class="badge" style="background:rgba(79,142,247,0.12);color:#4f8ef7;">En cours</span></td>
+              <td style="padding:14px 16px;"><span class="badge badge-critical">Critique</span></td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">Aujourd'hui</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 16px;color:var(--text);font-weight:500;">Bail commercial — Rue de Rivoli</td>
+              <td style="padding:14px 16px;color:var(--text-2);">SARL Lumière</td>
+              <td style="padding:14px 16px;"><span class="badge" style="background:rgba(201,168,42,0.12);color:var(--risk-medium);">En attente</span></td>
+              <td style="padding:14px 16px;"><span class="badge badge-medium">Moyen</span></td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">Hier</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 16px;color:var(--text);font-weight:500;">Litige fournisseur — Contrat fournitures</td>
+              <td style="padding:14px 16px;color:var(--text-2);">Groupe Horizon</td>
+              <td style="padding:14px 16px;"><span class="badge" style="background:rgba(77,174,133,0.12);color:var(--risk-low);">Clôturé</span></td>
+              <td style="padding:14px 16px;"><span class="badge badge-low">Faible</span></td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">12 mars</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 16px;color:var(--text);font-weight:500;">RGPD — Audit de conformité DPO</td>
+              <td style="padding:14px 16px;color:var(--text-2);">Meditech France</td>
+              <td style="padding:14px 16px;"><span class="badge" style="background:rgba(79,142,247,0.12);color:#4f8ef7;">En cours</span></td>
+              <td style="padding:14px 16px;"><span class="badge badge-high">Élevé</span></td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">10 mars</td>
+            </tr>
+            <tr>
+              <td style="padding:14px 16px;color:var(--text);font-weight:500;">Cession de parts — Société Dupont & Fils</td>
+              <td style="padding:14px 16px;color:var(--text-2);">Famille Dupont</td>
+              <td style="padding:14px 16px;"><span class="badge" style="background:rgba(201,168,42,0.12);color:var(--risk-medium);">En attente</span></td>
+              <td style="padding:14px 16px;"><span class="badge badge-medium">Moyen</span></td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">8 mars</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ────── VIEW: ÉQUIPE ────── -->
+    <section class="view" id="view-equipe">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Équipe</h1>
+          <p class="view-subtitle">Gestion des membres et des permissions</p>
+        </div>
+        <button class="btn btn-primary btn-sm">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Inviter un membre
+        </button>
+      </div>
+      <div class="card" style="overflow:auto;margin-bottom:var(--space-6);">
+        <table style="width:100%;border-collapse:collapse;font-size:14px;">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border);">
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Membre</th>
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Rôle</th>
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Statut</th>
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Dossiers actifs</th>
+              <th style="text-align:left;padding:12px 16px;font-size:11px;color:var(--text-3);font-weight:600;text-transform:uppercase;letter-spacing:0.8px;">Dernière activité</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 16px;"><div style="display:flex;align-items:center;gap:var(--space-3);"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;">SM</div><div><div style="font-weight:500;color:var(--text);">Me. Sophie Martin</div><div style="font-size:12px;color:var(--text-3);">s.martin@cabinet.fr</div></div></div></td>
+              <td style="padding:14px 16px;"><span class="badge badge-gold">Associée</span></td>
+              <td style="padding:14px 16px;"><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--risk-low);"><span style="width:7px;height:7px;background:var(--risk-low);border-radius:50%;"></span>Actif</span></td>
+              <td style="padding:14px 16px;color:var(--text-2);">18</td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">Maintenant</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 16px;"><div style="display:flex;align-items:center;gap:var(--space-3);"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#3b5fe8,#5b8ce8);">PD</div><div><div style="font-weight:500;color:var(--text);">Me. Pierre Dubois</div><div style="font-size:12px;color:var(--text-3);">p.dubois@cabinet.fr</div></div></div></td>
+              <td style="padding:14px 16px;"><span class="badge" style="background:rgba(91,140,232,0.12);color:var(--src-cassation);">Collaborateur</span></td>
+              <td style="padding:14px 16px;"><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--risk-low);"><span style="width:7px;height:7px;background:var(--risk-low);border-radius:50%;"></span>Actif</span></td>
+              <td style="padding:14px 16px;color:var(--text-2);">9</td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">Il y a 2h</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--border);">
+              <td style="padding:14px 16px;"><div style="display:flex;align-items:center;gap:var(--space-3);"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#6dc49a,#4dae85);">AL</div><div><div style="font-weight:500;color:var(--text);">Me. Amandine Lefèvre</div><div style="font-size:12px;color:var(--text-3);">a.lefevre@cabinet.fr</div></div></div></td>
+              <td style="padding:14px 16px;"><span class="badge" style="background:rgba(91,140,232,0.12);color:var(--src-cassation);">Collaboratrice</span></td>
+              <td style="padding:14px 16px;"><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--text-3);"><span style="width:7px;height:7px;background:var(--text-3);border-radius:50%;"></span>Absent</span></td>
+              <td style="padding:14px 16px;color:var(--text-2);">7</td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">Hier</td>
+            </tr>
+            <tr>
+              <td style="padding:14px 16px;"><div style="display:flex;align-items:center;gap:var(--space-3);"><div class="user-avatar" style="width:32px;height:32px;font-size:12px;background:linear-gradient(135deg,#b97cf5,#8b5cf6);">TR</div><div><div style="font-weight:500;color:var(--text);">Tom Richard</div><div style="font-size:12px;color:var(--text-3);">t.richard@cabinet.fr</div></div></div></td>
+              <td style="padding:14px 16px;"><span class="badge" style="background:rgba(237,234,227,0.08);color:var(--text-3);">Stagiaire</span></td>
+              <td style="padding:14px 16px;"><span style="display:flex;align-items:center;gap:6px;font-size:13px;color:var(--risk-low);"><span style="width:7px;height:7px;background:var(--risk-low);border-radius:50%;"></span>Actif</span></td>
+              <td style="padding:14px 16px;color:var(--text-2);">3</td>
+              <td style="padding:14px 16px;color:var(--text-3);font-size:13px;">Il y a 30min</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ────── VIEW: RAPPORTS ────── -->
+    <section class="view" id="view-rapports">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Rapports</h1>
+          <p class="view-subtitle">Générez et exportez des rapports personnalisés aux couleurs de votre cabinet</p>
+        </div>
+      </div>
+      <div class="two-col" style="align-items:start;">
+        <div>
+          <p class="section-label" style="margin-bottom:var(--space-4);">Modèles de rapports</p>
+          <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+            <div class="card card-hover" style="cursor:pointer;display:flex;align-items:center;gap:var(--space-4);">
+              <div style="width:40px;height:40px;background:var(--gold-pale);border:1px solid var(--border-gold);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📋</div>
+              <div><div style="font-weight:500;color:var(--text);margin-bottom:2px;">Résumé exécutif</div><div style="font-size:13px;color:var(--text-3);">Synthèse des points clés et risques majeurs</div></div>
+            </div>
+            <div class="card card-hover" style="cursor:pointer;display:flex;align-items:center;gap:var(--space-4);">
+              <div style="width:40px;height:40px;background:rgba(224,83,83,0.08);border:1px solid rgba(224,83,83,0.2);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">⚠️</div>
+              <div><div style="font-weight:500;color:var(--text);margin-bottom:2px;">Analyse des risques</div><div style="font-size:13px;color:var(--text-3);">Rapport détaillé clause par clause avec scores</div></div>
+            </div>
+            <div class="card card-hover" style="cursor:pointer;display:flex;align-items:center;gap:var(--space-4);">
+              <div style="width:40px;height:40px;background:rgba(91,140,232,0.08);border:1px solid rgba(91,140,232,0.2);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">💬</div>
+              <div><div style="font-weight:500;color:var(--text);margin-bottom:2px;">Mémo de négociation</div><div style="font-size:13px;color:var(--text-3);">Points à négocier et stratégie recommandée</div></div>
+            </div>
+            <div class="card card-hover" style="cursor:pointer;display:flex;align-items:center;gap:var(--space-4);">
+              <div style="width:40px;height:40px;background:rgba(109,196,154,0.08);border:1px solid rgba(109,196,154,0.2);border-radius:var(--r-md);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;">📊</div>
+              <div><div style="font-weight:500;color:var(--text);margin-bottom:2px;">Audit contractuel</div><div style="font-size:13px;color:var(--text-3);">Rapport complet de due diligence contractuelle</div></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p class="section-label" style="margin-bottom:var(--space-4);">Rapports générés</p>
+          <div style="display:flex;flex-direction:column;gap:var(--space-3);">
+            <div class="card" style="display:flex;align-items:center;gap:var(--space-4);">
+              <div style="flex:1;"><div style="font-weight:500;color:var(--text);margin-bottom:2px;">Analyse TechCorp — Résumé exécutif</div><div style="font-size:12px;color:var(--text-3);">Généré le 3 avril 2026 · 8 pages</div></div>
+              <span class="badge badge-low" style="font-size:10px;">Prêt</span>
+              <button class="btn btn-ghost btn-sm">↓</button>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:var(--space-4);">
+              <div style="flex:1;"><div style="font-weight:500;color:var(--text);margin-bottom:2px;">Bail commercial — Mémo de négociation</div><div style="font-size:12px;color:var(--text-3);">Généré le 1 avril 2026 · 4 pages</div></div>
+              <span class="badge badge-low" style="font-size:10px;">Prêt</span>
+              <button class="btn btn-ghost btn-sm">↓</button>
+            </div>
+            <div class="card" style="display:flex;align-items:center;gap:var(--space-4);">
+              <div style="flex:1;"><div style="font-weight:500;color:var(--text);margin-bottom:2px;">RGPD Meditech — Audit contractuel</div><div style="font-size:12px;color:var(--text-3);">En cours de génération…</div></div>
+              <div class="spinner" style="width:16px;height:16px;border-width:2px;"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ────── VIEW: PARAMÈTRES ────── -->
+    <section class="view" id="view-parametres">
+      <div class="view-header">
+        <div>
+          <h1 class="view-title">Paramètres</h1>
+          <p class="view-subtitle">Configuration de l'API et des préférences du cabinet</p>
+        </div>
+      </div>
+
+      <div style="max-width:600px;display:flex;flex-direction:column;gap:var(--space-6);">
+        <!-- API Card -->
+        <div class="card">
+          <h4 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:var(--space-2);">API Anthropic</h4>
+          <p style="font-size:14px;color:var(--text-3);margin-bottom:var(--space-5);">Votre clé API est stockée localement dans votre navigateur. Elle n'est jamais transmise à nos serveurs.</p>
+          <div class="modal-field" style="margin-bottom:var(--space-4);">
+            <label class="modal-label">Clé API Anthropic</label>
+            <div style="display:flex;gap:var(--space-3);">
+              <input type="password" class="input" id="settingsApiKey" placeholder="sk-ant-api03-…" />
+              <button class="btn btn-outline btn-sm" id="toggleApiKey" style="flex-shrink:0;">Afficher</button>
+            </div>
+            <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" class="modal-hint" style="margin-top:var(--space-2);display:inline-block;">Obtenir une clé sur console.anthropic.com →</a>
+          </div>
+          <div style="display:flex;gap:var(--space-3);">
+            <button class="btn btn-primary" id="saveApiKeyBtn">Enregistrer la clé</button>
+            <button class="btn btn-outline" id="testApiKeyBtn">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              Tester la connexion
+            </button>
+          </div>
+          <div class="modal-test-result" id="settingsTestResult" style="margin-top:var(--space-4);"></div>
+        </div>
+
+        <!-- Model Card -->
+        <div class="card">
+          <h4 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:var(--space-2);">Modèle IA</h4>
+          <p style="font-size:14px;color:var(--text-3);margin-bottom:var(--space-4);">Sélectionnez le modèle Claude utilisé pour les analyses.</p>
+          <select class="editor-select" id="modelSelect">
+            <option value="claude-opus-4-6" selected>claude-opus-4-6 — Opus 4.6 (recommandé)</option>
+            <option value="claude-sonnet-4-6">claude-sonnet-4-6 — Sonnet 4.6 (plus rapide)</option>
+          </select>
+        </div>
+
+        <!-- Cabinet Card -->
+        <div class="card">
+          <h4 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:var(--space-4);">Informations du cabinet</h4>
+          <div style="display:flex;flex-direction:column;gap:var(--space-4);">
+            <div class="modal-field">
+              <label class="modal-label">Nom du cabinet</label>
+              <input class="input" type="text" id="firmName" placeholder="Cabinet Dupont & Associés" />
+            </div>
+            <div class="modal-field">
+              <label class="modal-label">Avocat référent</label>
+              <input class="input" type="text" id="lawyerName" placeholder="Me. Sophie Martin" />
+            </div>
+            <button class="btn btn-primary" id="saveFirmBtn">Enregistrer</button>
+          </div>
+        </div>
+
+        <!-- Security Card -->
+        <div class="card">
+          <h4 style="font-family:'Playfair Display',serif;font-size:18px;margin-bottom:var(--space-4);">Sécurité & RGPD</h4>
+          <div style="display:flex;flex-direction:column;gap:var(--space-4);">
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--bg-elevated);border-radius:var(--r-md);border:1px solid var(--border);">
+              <div><div style="font-size:14px;font-weight:500;color:var(--text);">Chiffrement AES-256</div><div style="font-size:13px;color:var(--text-3);">Tous les documents sont chiffrés</div></div>
+              <span class="badge badge-low">Actif</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--bg-elevated);border-radius:var(--r-md);border:1px solid var(--border);">
+              <div><div style="font-size:14px;font-weight:500;color:var(--text);">Zéro rétention des données</div><div style="font-size:13px;color:var(--text-3);">Vos documents ne sont pas stockés</div></div>
+              <span class="badge badge-low">Actif</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:var(--space-4);background:var(--bg-elevated);border-radius:var(--r-md);border:1px solid var(--border);">
+              <div><div style="font-size:14px;font-weight:500;color:var(--text);">Hébergement France / UE</div><div style="font-size:13px;color:var(--text-3);">Conformité RGPD native</div></div>
+              <span class="badge badge-low">Actif</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main><!-- /main-content -->
+</div><!-- /app-shell -->
+
+<!-- ══ API KEY MODAL ══ -->
+<div class="modal-overlay hidden" id="apiModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Configurer l'API Anthropic</h3>
+      <button class="btn-icon" id="modalClose">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p>Entrez votre clé API Anthropic pour utiliser Jurisia. Elle est stockée uniquement dans votre navigateur.</p>
+      <div class="modal-field">
+        <label class="modal-label">Clé API Anthropic</label>
+        <input type="password" class="input" id="modalApiKey" placeholder="sk-ant-api03-…" autocomplete="off" />
+        <a href="https://console.anthropic.com/settings/keys" target="_blank" rel="noopener" class="modal-hint" style="margin-top:var(--space-2);display:inline-block;">
+          Obtenir une clé sur console.anthropic.com →
+        </a>
+      </div>
+      <div class="modal-test-result" id="modalTestResult"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="modalCancel">Annuler</button>
+      <button class="btn btn-outline btn-sm" id="modalTestBtn">Tester</button>
+      <button class="btn btn-primary" id="modalSaveBtn">Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<script src="config.js"></script>
+<script src="js/api.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
