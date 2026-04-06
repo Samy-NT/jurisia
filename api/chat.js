@@ -14,6 +14,10 @@ const ANTHROPIC_VERSION = '2023-06-01';
 const DEFAULT_MODEL     = 'claude-sonnet-4-6';
 
 export default async function handler(req, res) {
+  // Temporary debug — remove after confirming API key is loaded
+  console.log('API Key prefix:', process.env.ANTHROPIC_API_KEY?.substring(0, 15));
+  console.log('API Key length:', process.env.ANTHROPIC_API_KEY?.length);
+
   // Only accept POST
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
