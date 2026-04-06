@@ -79,14 +79,10 @@ function updateApiStatus() {
     dot.style.background = 'var(--risk-medium)';
     text.textContent     = 'Mode démo';
     $('apiStatusBtn') && $('apiStatusBtn').classList.add('connected');
-  } else if (state.apiKey) {
+  } else {
     dot.style.background = 'var(--risk-low)';
     text.textContent     = 'API connectée';
     $('apiStatusBtn') && $('apiStatusBtn').classList.add('connected');
-  } else {
-    dot.style.background = 'var(--text-3)';
-    text.textContent     = 'API non configurée';
-    $('apiStatusBtn') && $('apiStatusBtn').classList.remove('connected');
   }
 }
 
@@ -247,8 +243,6 @@ $('searchQuery') && $('searchQuery').addEventListener('keydown', e => {
 async function runSearch() {
   const query = ($('searchQuery').value || '').trim();
   if (!query) { $('searchQuery') && $('searchQuery').focus(); return; }
-
-  if (!state.apiKey && !state.demoMode) { openModal(); return; }
 
   const sources = [...document.querySelectorAll('.src-filter:checked')].map(cb => cb.value);
   if (!sources.length) { alert('Sélectionnez au moins une source.'); return; }
@@ -527,8 +521,6 @@ async function runAnalysis() {
     if (uploadZone) { uploadZone.style.borderColor = 'var(--risk-critical)'; setTimeout(() => uploadZone.style.borderColor = '', 1500); }
     return;
   }
-  if (!state.apiKey && !state.demoMode && !state.isWowDemo) { openModal(); return; }
-
   const config = {
     clauses: $('optClauses')?.checked ?? true,
     risk:    $('optScore')?.checked   ?? true,
@@ -976,7 +968,6 @@ async function sendChat() {
   if (!input) return;
   const text = input.value.trim();
   if (!text) return;
-  if (!state.apiKey && !state.demoMode) { openModal(); return; }
 
   input.value = '';
   input.style.height = 'auto';
@@ -1071,7 +1062,6 @@ async function generateDocument() {
   const context = $('actContext')?.value.trim()  || '';
 
   if (!actType) { $('actType')?.focus(); return; }
-  if (!state.apiKey && !state.demoMode) { openModal(); return; }
 
   const typeLabels = {
     assignation:        'Assignation en justice',
@@ -1146,7 +1136,6 @@ $('exportDocBtn') && $('exportDocBtn').addEventListener('click', () => {
 
 // AI suggestion in editor
 $('aiSuggestBtn') && $('aiSuggestBtn').addEventListener('click', async () => {
-  if (!state.apiKey && !state.demoMode) { openModal(); return; }
   const editor = $('editorContent');
   if (!editor || !editor.value.trim()) return;
 
@@ -1654,18 +1643,6 @@ const SVG_COPY = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" st
 function init() {
   updateApiStatus();
   initSettings();
-
-  // Load API key from config.js if not in localStorage and key is set there
-  if (!state.apiKey && window.JURISIA_CONFIG?.ANTHROPIC_API_KEY) {
-    state.apiKey = window.JURISIA_CONFIG.ANTHROPIC_API_KEY;
-    localStorage.setItem('jurisia_api_key', state.apiKey);
-    updateApiStatus();
-  }
-
-  // First launch: prompt for API key after a short delay
-  if (!state.apiKey) {
-    setTimeout(openModal, 600);
-  }
 }
 
 init();
