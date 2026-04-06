@@ -1,14 +1,16 @@
 /**
- * Jurisia — Anthropic API Integration
- * Streaming + JSON structured calls via claude-sonnet-4-20250514
+ * Jurisia — API Integration
+ * All requests are proxied through /api/chat (Vercel serverless function).
+ * The Anthropic API key never reaches the browser.
  */
 
-const ANTHROPIC_API_URL = 'https://api.anthropic.com/v1/messages';
+// All calls go through the server-side proxy — no direct Anthropic URL in the browser
+const API_PROXY_URL = '/api/chat';
 
 // Picks up model from config.js if loaded, otherwise uses the default
 const MODEL = (window.JURISIA_CONFIG && window.JURISIA_CONFIG.MODEL)
   ? window.JURISIA_CONFIG.MODEL
-  : 'claude-sonnet-4-20250514';
+  : 'claude-sonnet-4-6';
 
 // ── System Prompts ────────────────────────────────────────────────────────────
 
@@ -81,16 +83,9 @@ Rédige en français juridique formel.`,
  * @throws {Error}             On API error or JSON parse failure
  */
 async function callApiJSON(messages, systemPrompt, apiKey) {
-  if (!apiKey) throw new Error('Clé API manquante. Configurez votre clé dans Paramètres > API & IA.');
-
-  const response = await fetch(ANTHROPIC_API_URL, {
+  const response = await fetch(API_PROXY_URL, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       model: MODEL,
       max_tokens: 4096,
@@ -133,11 +128,6 @@ async function callApiJSON(messages, systemPrompt, apiKey) {
  * Renders markdown in real-time with a blinking cursor.
  */
 async function streamToElement(messages, systemPrompt, apiKey, targetEl, onDone, onError) {
-  if (!apiKey) {
-    onError && onError('Clé API manquante. Configurez votre clé dans les Paramètres.');
-    return;
-  }
-
   let fullText = '';
   targetEl.innerHTML = '';
 
@@ -146,14 +136,9 @@ async function streamToElement(messages, systemPrompt, apiKey, targetEl, onDone,
   cursorEl.textContent = '▋';
 
   try {
-    const response = await fetch(ANTHROPIC_API_URL, {
+    const response = await fetch(API_PROXY_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 4096,
@@ -221,22 +206,12 @@ async function streamToElement(messages, systemPrompt, apiKey, targetEl, onDone,
  * Streams a response, calling onChunk(chunk, fullText) for each text delta.
  */
 async function streamToCallback(messages, systemPrompt, apiKey, onChunk, onDone, onError) {
-  if (!apiKey) {
-    onError && onError('Clé API manquante. Configurez votre clé dans Paramètres > API & IA.');
-    return;
-  }
-
   let fullText = '';
 
   try {
-    const response = await fetch(ANTHROPIC_API_URL, {
+    const response = await fetch(API_PROXY_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 4096,
@@ -327,16 +302,10 @@ async function sendChatMessage(messages, context, apiKey, onChunk, onDone, onErr
  * Tests the API connection. Returns { ok, message }.
  */
 async function testApiConnection(apiKey) {
-  if (!apiKey) return { ok: false, message: 'Clé API manquante' };
   try {
-    const response = await fetch(ANTHROPIC_API_URL, {
+    const response = await fetch(API_PROXY_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': apiKey,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         model: MODEL,
         max_tokens: 5,

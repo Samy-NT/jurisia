@@ -1,13 +1,9 @@
 /**
- * LexIA — Configuration
- * Renseignez votre clé API Anthropic ici pour éviter de la saisir à chaque session.
- * Cette valeur est écrasée par la clé stockée en localStorage si elle existe.
+ * Jurisia — Configuration
+ * La clé API est désormais gérée côté serveur (variable d'environnement Vercel).
+ * Ce fichier permet uniquement de surcharger le modèle utilisé.
  */
-window.LEXIA_CONFIG = {
-  // Votre clé API Anthropic (ex: 'sk-ant-api03-...')
-  // Laissez vide pour utiliser uniquement la saisie dans l'interface
-  ANTHROPIC_API_KEY: '',
-
+window.JURISIA_CONFIG = {
   // Modèle utilisé pour toutes les analyses
-  MODEL: 'claude-sonnet-4-20250514',
+  MODEL: 'claude-sonnet-4-6',
 };
