@@ -1,5 +1,5 @@
 /**
- * Jurisia — Application Logic
+ * Praxa — Application Logic
  * Modules: Navigation · Recherche · Analyse · Chat · Rédaction
  * Fully functional with Anthropic API + Demo mode
  */
@@ -7,12 +7,12 @@
 // ── State ──────────────────────────────────────────────────────────────────────
 const state = {
   // API key: priority order → localStorage → config.js → empty
-  apiKey:   localStorage.getItem('jurisia_api_key')
-            || (window.JURISIA_CONFIG && window.JURISIA_CONFIG.ANTHROPIC_API_KEY)
+  apiKey:   localStorage.getItem('praxa_api_key')
+            || (window.PRAXA_CONFIG && window.PRAXA_CONFIG.ANTHROPIC_API_KEY)
             || '',
-  firmName: localStorage.getItem('jurisia_firm')   || 'Cabinet Dupont & Associés',
-  lawyer:   localStorage.getItem('jurisia_lawyer') || 'Me. Sophie Martin',
-  model:    localStorage.getItem('jurisia_model')  || 'claude-sonnet-4-20250514',
+  firmName: localStorage.getItem('praxa_firm')   || 'Cabinet Dupont & Associés',
+  lawyer:   localStorage.getItem('praxa_lawyer') || 'Me. Sophie Martin',
+  model:    localStorage.getItem('praxa_model')  || 'claude-sonnet-4-20250514',
   demoMode: false,
 
   chatHistory:         [],
@@ -106,7 +106,7 @@ $('modalSaveBtn') && $('modalSaveBtn').addEventListener('click', () => {
   const key = ($('modalApiKey').value || '').trim();
   state.apiKey  = key;
   state.demoMode = false;
-  localStorage.setItem('jurisia_api_key', key);
+  localStorage.setItem('praxa_api_key', key);
   updateApiStatus();
   closeModal();
   if ($('settingsApiKey')) $('settingsApiKey').value = key;
@@ -177,7 +177,7 @@ $('saveApiKeyBtn') && $('saveApiKeyBtn').addEventListener('click', () => {
   const key = ($('settingsApiKey').value || '').trim();
   state.apiKey   = key;
   state.demoMode = false;
-  localStorage.setItem('jurisia_api_key', key);
+  localStorage.setItem('praxa_api_key', key);
   updateApiStatus();
   $('saveApiKeyBtn').textContent = '✓ Enregistrée';
   setTimeout(() => { $('saveApiKeyBtn').textContent = 'Enregistrer la clé'; }, 2000);
@@ -203,15 +203,15 @@ $('testApiKeyBtn') && $('testApiKeyBtn').addEventListener('click', async () => {
 $('saveFirmBtn') && $('saveFirmBtn').addEventListener('click', () => {
   state.firmName = ($('firmName').value  || '').trim() || state.firmName;
   state.lawyer   = ($('lawyerName').value || '').trim() || state.lawyer;
-  localStorage.setItem('jurisia_firm',   state.firmName);
-  localStorage.setItem('jurisia_lawyer', state.lawyer);
+  localStorage.setItem('praxa_firm',   state.firmName);
+  localStorage.setItem('praxa_lawyer', state.lawyer);
   $('saveFirmBtn').textContent = '✓ Enregistré';
   setTimeout(() => { $('saveFirmBtn').textContent = 'Enregistrer'; }, 2000);
 });
 
 $('modelSelect') && $('modelSelect').addEventListener('change', () => {
   state.model = $('modelSelect').value;
-  localStorage.setItem('jurisia_model', state.model);
+  localStorage.setItem('praxa_model', state.model);
 });
 
 // ══════════════════════════════════════════════════════════════════════════════
@@ -916,7 +916,7 @@ $('newChatBtn') && $('newChatBtn').addEventListener('click', () => {
         <div class="message-bubble md-content">
           <p>Nouvelle conversation démarrée. Comment puis-je vous assister, ${escapeHtml(state.lawyer)} ?</p>
         </div>
-        <div class="message-time">Jurisia · maintenant</div>
+        <div class="message-time">Praxa · maintenant</div>
       </div>
     </div>`;
 });
@@ -987,7 +987,7 @@ async function sendChat() {
       <div class="message-bubble md-content" id="${aiId}-bubble">
         <div class="typing-dots"><span></span><span></span><span></span></div>
       </div>
-      <div class="message-time">Jurisia · maintenant</div>
+      <div class="message-time">Praxa · maintenant</div>
     </div>`;
   wrap.appendChild(aiEl);
   wrap.scrollTop = wrap.scrollHeight;
@@ -1129,7 +1129,7 @@ $('exportDocBtn') && $('exportDocBtn').addEventListener('click', () => {
   const url  = URL.createObjectURL(blob);
   const a    = document.createElement('a');
   a.href     = url;
-  a.download = 'Jurisia_acte_juridique.txt';
+  a.download = 'Praxa_acte_juridique.txt';
   a.click();
   URL.revokeObjectURL(url);
 });
@@ -1464,7 +1464,7 @@ Votre question porte sur un point de droit important. En mode démo, je vous fou
 1. Configurer votre clé API Anthropic dans les Paramètres
 2. Relancer votre question
 
-La plateforme Jurisia utilise **Claude ${MODEL}** pour des analyses juridiques en droit français et européen, avec citations jurisprudentielles précises.
+La plateforme Praxa utilise **Claude ${MODEL}** pour des analyses juridiques en droit français et européen, avec citations jurisprudentielles précises.
 
 *Connectez votre clé API pour accéder à l'assistant juridique complet.*`;
 }

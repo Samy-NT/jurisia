@@ -1,5 +1,5 @@
 /**
- * Jurisia — Vercel Serverless Function
+ * Praxa — Vercel Serverless Function
  * POST /api/chat
  *
  * Proxies requests to the Anthropic API using the server-side key.
@@ -41,7 +41,7 @@ export default async function handler(req, res) {
 
   // Validate messages
   if (!messages || !Array.isArray(messages) || messages.length === 0) {
-    console.error('[jurisia/api/chat] 400 — messages array missing or empty. Body:', JSON.stringify(req.body));
+    console.error('[praxa/api/chat] 400 — messages array missing or empty. Body:', JSON.stringify(req.body));
     return res.status(400).json({ error: 'messages array is required.' });
   }
 
@@ -54,7 +54,7 @@ export default async function handler(req, res) {
   };
   if (system) payload.system = system;
 
-  console.log('[jurisia/api/chat] → Anthropic payload:', JSON.stringify({
+  console.log('[praxa/api/chat] → Anthropic payload:', JSON.stringify({
     model:      payload.model,
     max_tokens: payload.max_tokens,
     stream:     payload.stream,
@@ -83,14 +83,14 @@ export default async function handler(req, res) {
         body: JSON.stringify(payload),
       });
     } catch (networkErr) {
-      console.error('[jurisia/api/chat] Network error (stream):', networkErr.message);
+      console.error('[praxa/api/chat] Network error (stream):', networkErr.message);
       res.write(`data: ${JSON.stringify({ error: 'Network error reaching Anthropic.' })}\n\n`);
       return res.end();
     }
 
     if (!upstream.ok) {
       const errData = await upstream.json().catch(() => ({}));
-      console.error(`[jurisia/api/chat] Anthropic error ${upstream.status} (stream):`, JSON.stringify(errData));
+      console.error(`[praxa/api/chat] Anthropic error ${upstream.status} (stream):`, JSON.stringify(errData));
       const msg = errData.error?.message || `Anthropic error ${upstream.status}`;
       res.write(`data: ${JSON.stringify({ error: msg, status: upstream.status })}\n\n`);
       return res.end();
@@ -126,14 +126,14 @@ export default async function handler(req, res) {
       body: JSON.stringify(payload),
     });
   } catch (networkErr) {
-    console.error('[jurisia/api/chat] Network error (non-stream):', networkErr.message);
+    console.error('[praxa/api/chat] Network error (non-stream):', networkErr.message);
     return res.status(502).json({ error: 'Network error reaching Anthropic.' });
   }
 
   const data = await upstream.json().catch(() => ({}));
 
   if (!upstream.ok) {
-    console.error(`[jurisia/api/chat] Anthropic error ${upstream.status} (non-stream):`, JSON.stringify(data));
+    console.error(`[praxa/api/chat] Anthropic error ${upstream.status} (non-stream):`, JSON.stringify(data));
     let message = data.error?.message || `Anthropic error ${upstream.status}`;
     if (upstream.status === 401) message = 'Clé API invalide ou expirée.';
     if (upstream.status === 429) message = 'Limite de requêtes atteinte. Patientez quelques secondes.';

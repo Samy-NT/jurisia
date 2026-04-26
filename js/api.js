@@ -1,5 +1,5 @@
 /**
- * Jurisia — API Integration
+ * Praxa — API Integration
  * All requests are proxied through /api/chat (Vercel serverless function).
  * The Anthropic API key never reaches the browser.
  */
@@ -8,8 +8,8 @@
 const API_PROXY_URL = '/api/chat';
 
 // Picks up model from config.js if loaded, otherwise uses the default
-const MODEL = (window.JURISIA_CONFIG && window.JURISIA_CONFIG.MODEL)
-  ? window.JURISIA_CONFIG.MODEL
+const MODEL = (window.PRAXA_CONFIG && window.PRAXA_CONFIG.MODEL)
+  ? window.PRAXA_CONFIG.MODEL
   : 'claude-sonnet-4-6';
 
 // ── System Prompts ────────────────────────────────────────────────────────────
@@ -28,7 +28,7 @@ Ne fournis jamais de markdown, d'explication, ni de commentaire. Seulement du JS
 Toutes les valeurs textuelles doivent être en français juridique professionnel.`,
 
   // Used for free-form streaming analysis (synthesis tab)
-  analysis_stream: `Tu es Jurisia, un expert en analyse contractuelle juridique française et européenne travaillant pour un cabinet d'avocats d'affaires parisien de premier plan.
+  analysis_stream: `Tu es Praxa, un expert en analyse contractuelle juridique française et européenne travaillant pour un cabinet d'avocats d'affaires parisien de premier plan.
 
 Tes domaines d'expertise :
 - Droit des contrats (Code civil, Code de commerce)
@@ -46,7 +46,7 @@ Lorsque tu analyses un document juridique :
 Rédige en français juridique précis. Sois rigoureux, objectif, au service des intérêts du client.`,
 
   // Used for chat
-  chat: `Tu es Jurisia, l'assistant juridique IA de référence pour cabinets d'avocats français.
+  chat: `Tu es Praxa, l'assistant juridique IA de référence pour cabinets d'avocats français.
 
 Expertise :
 - Droit civil, commercial, social, administratif, européen
